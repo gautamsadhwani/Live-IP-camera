@@ -1,0 +1,64 @@
+<!-- app1.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Video Stream</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #video_feed {
+            width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+        #capture_button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            display: block;
+            margin: 20px auto;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        #capture_button:hover {
+            background-color: #0056b3;
+        }
+        #feedback {
+            margin-top: 20px;
+            color: green;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Video Stream</h1>
+    <div>
+        <img id="video_feed" src="{% url 'home' %}" width="100%" />
+    </div>
+    <button id="capture_button">Capture Image</button>
+    <div id="feedback"></div>
+    
+    <script>
+        console.log('Script loaded');
+        document.getElementById('capture_button').addEventListener('click', function() {
+            fetch('/capture_image/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('feedback').innerHTML = data.message;
+            })
+            .catch(error => {
+                document.getElementById('feedback').innerHTML = 'An error occurred: ' + error;
+            });
+        });
+    </script>
+</body>
+</html>
